@@ -1,0 +1,32 @@
+Test Cases
+----------
+Each test case has 3 files of the format
+1. true_<caseid>.er , the true edits
+2. corr_<caseid>.er , the corrected edits 
+   given by an Error Correction pgm.
+unmap.er remains the same in all cases
+
+Each case handles both when the correction is matching with true
+output and when it doesn't match
+
+The following test case numbers are used
+|--------------------------------+--------------+----+----+----|
+| Case                           |           Id | TN | FP | FN |
+|--------------------------------+--------------+----+----+----|
+| Substitutions - single/mult    |            1 |  4 |  1 |  3 |
+| Insertion - single             |            2 |  2 |  1 |  1 |
+| Insertion - multiple           |            3 |  4 |  2 |  3 |
+| Deletion - single              |            " |  4 |  2 |  3 |
+| Deletion - multiple            |            4 |  5 |  1 |  1 |
+| Insertion followed by Deletion |            5 |    |    |    |
+| Multiple Ins followed by Del   | Not required |    |    |    |
+| Deletion followed by Insertion |            6 |    |    |    |
+| Multiple Del followed by Ins   |            7 |    |    |    |
+| Ins followed by Sub            |            8 |    |    |    |
+| Del followed by Sub            |            9 |    |    |    |
+|--------------------------------+--------------+----+----+----|
+
+
+Insertion followed by Deletion will not work. But I am not fixing
+until i find that Coral actually fixes insertion/deletion.
+

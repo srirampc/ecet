@@ -1,0 +1,24 @@
+Notations: 
+---------------------------
+FP: exist in tar but not ref
+FN: exist in ref but not tar
+TP: exist in both tar and ref
+---------------------------
+Total Err (TP, FN):	8
+
+TP	5
+
+FP	1
+
+FN	3
+
+EBA	1
+
+Sensitivity = 0.625
+
+Gain = 0.5
+
+Total Errs Corrected in tar reads that cannot be uniquely mappedby RMAP (-m = 4) : 0
+
+Approximate ambiguous correction false rate: 0 out of 0 ( -nan % ) 
+

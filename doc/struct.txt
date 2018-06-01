@@ -1,0 +1,134 @@
+ec-review
+|-- data
+|   |-- Dorsphilia
+|   |   |-- bwa
+|   |   |-- coral
+|   |   |-- echo
+|   |   |-- errors
+|   |   |-- fasta
+|   |   |-- fastq
+|   |   |-- hammer
+|   |   |-- hitec
+|   |   |-- hshrec
+|   |   |-- quake
+|   |   |-- ref_genome
+|   |   |-- reptile
+|   |   |-- rmap
+|   |   `-- sra
+|   |-- EColi2-HiTEC
+|   |   |-- bwa
+|   |   |-- coral
+|   |   |-- download
+|   |   |-- echo
+|   |   |-- fasta
+|   |   |-- fastq
+|   |   |-- hitec
+|   |   |-- hshrec
+|   |   |-- quake
+|   |   |-- ref_genome
+|   |   `-- reptile
+|   |-- ecoli-iontorrent
+|   |   |-- bwa
+|   |   |-- coral
+|   |   |-- fasta
+|   |   |-- fastq
+|   |   |-- hshrec
+|   |   |-- ref_genome
+|   |   `-- tmap
+|   |-- ERA000206
+|   |   |-- bwa
+|   |   |-- coral
+|   |   |-- echo
+|   |   |-- fasta
+|   |   |-- fastq
+|   |   |-- hitec
+|   |   |-- hshrec
+|   |   |-- quake
+|   |   |-- ref_genome
+|   |   `-- reptile
+|   |-- SRR000868
+|   |   |-- bwa
+|   |   |-- coral
+|   |   |-- echo
+|   |   |-- fasta
+|   |   |-- fastq
+|   |   |-- hitec
+|   |   |-- hshrec
+|   |   |-- mosaik
+|   |   |-- quake
+|   |   |-- ref_genome
+|   |   |-- reptile
+|   |   `-- rmap
+|   |-- SRR022866
+|   |   |-- bwa
+|   |   |-- coral
+|   |   |-- echo
+|   |   |-- fasta
+|   |   |-- fastq
+|   |   |-- hitec
+|   |   |-- hshrec
+|   |   |-- quake
+|   |   |-- ref_genome
+|   |   `-- reptile
+|   |-- SRR022918
+|   |   |-- bwa
+|   |   |-- coral
+|   |   |-- echo
+|   |   |-- fasta
+|   |   |-- fastq
+|   |   |-- hitec
+|   |   |-- hshrec
+|   |   |-- quake
+|   |   |-- ref_genome
+|   |   |-- reptile
+|   |   |-- rmap
+|   |   `-- sra
+|   `-- SRX000429
+|       |-- bwa
+|       |-- coral
+|       |-- echo
+|       |-- fasta
+|       |-- fastq
+|       |-- hitec
+|       |-- hshrec
+|       |-- quake
+|       |-- ref_genome
+|       |-- reptile
+|       `-- sra
+|-- coral
+|   `-- coral-1.3
+|-- echo
+|-- hitec
+|   `-- HiTEC_64bit
+|-- hshrec
+|   `-- BaseSpaceSHREC
+|-- quake
+|   |-- jellyfish-1.0.2
+|   |-- jellyfish-1.1.2
+|   `-- Quake
+|       |-- bin
+|       `-- src
+|-- reptile
+|   |-- doc
+|   |-- downloads
+|   |-- src
+|   `-- utils
+|       |-- reptile_merger
+|       `-- seq-analy
+|-- samtools
+|   |-- bam2bed
+|   `-- samtools-0.1.18
+|-- bwa
+|   `-- bwa-0.5.9
+|-- rmap
+|   `-- rmap_v2.05
+|-- tmap
+|   `-- tmap-0.1.3
+|-- mosaik
+|   `-- MOSAIK-2.1.33-Linux-x64
+`-- tools
+    |-- CompToPCAlign
+    |-- doc
+    |-- rmapAnaly
+    `-- scripts
+

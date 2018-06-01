@@ -1,0 +1,6 @@
+*.o
+*.pyc
+tools.zip
+bin/
+tools/rmapAnaly/rmap-analy
+tools/CompToPCAlign/comp2pcalign

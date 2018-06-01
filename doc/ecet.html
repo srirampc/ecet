@@ -1,0 +1,880 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Error Correction Evaluation Method</title>
+<!-- 2018-06-01 Fri 14:36 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Sriram P Chockalingam" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Error Correction Evaluation Method</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. Evaluation method</a>
+<ul>
+<li><a href="#sec-1-1">1.1. Evaluation method for Illumina reads</a></li>
+<li><a href="#sec-1-2">1.2. Evaluation method for 454/Ion Torrent Reads</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2. Tools</a>
+<ul>
+<li><a href="#sec-2-1">2.1. Requirements</a></li>
+<li><a href="#sec-2-2">2.2. Pre-processing Data</a></li>
+<li><a href="#sec-2-3">2.3. Conversion to TEF</a></li>
+<li><a href="#sec-2-4">2.4. SAM to TEF Conversion</a></li>
+<li><a href="#sec-2-5">2.5. Comp2PCAlign</a></li>
+<li><a href="#sec-2-6">2.6. Corrected 454/Ion Torrent Reads Analysis</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3. Procedure Conventions</a></li>
+<li><a href="#sec-4">4. Download</a></li>
+</ul>
+</div>
+</div>
+<p>
+In this page, we discuss the scripts and other tools used to evaluate
+error correction method. In the first section, we discuss the
+procedure for  evaluation methods for Illumina and 454/Ion Torrent
+reads. In the second section, we discuss the tools and its usage. In
+the third section, we describe the conventions used for
+evaluation. The last section provides the link to download the tools.
+</p>
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Evaluation method</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> Evaluation method for Illumina reads</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+Evaluation of output from error correction method consists of
+following steps, 
+</p>
+<ol class="org-ol">
+<li>Align reads prior to correction.
+</li>
+<li>Convert pre-correction alignment to Target Error Format (TEF).
+</li>
+<li>Run error correction program.
+</li>
+<li>Convert error correction output to Target Error Format (TEF).
+</li>
+<li>Compare TEFs from steps (2) and (4) and measure Gain.
+</li>
+</ol>
+
+<p>
+The following sub-section describe these steps.
+</p>
+</div>
+<div id="outline-container-sec-1-1-1" class="outline-4">
+<h4 id="sec-1-1-1"><span class="section-number-4">1.1.1</span> Target error format (TEF)</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+We use a format called target error format (TEF) to perform the
+analysis for Illumina reads. TEF represents the errors in a read as
+below: 
+</p>
+<pre class="example">
+readid n-errors [pos tb wb ind]+
+</pre>
+<p>
+In the above format, the fields are described as below :
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">Fields</th>
+<th scope="col" class="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">readid</td>
+<td class="left">ID of the read corrected</td>
+</tr>
+
+<tr>
+<td class="left">n-errors</td>
+<td class="left">Integer. Number of errors corrected in the read.</td>
+</tr>
+
+<tr>
+<td class="left">pos</td>
+<td class="left">Position for fix (0 &lt;= pos &lt; length of the read)</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">tb</td>
+<td class="left">true value of the base at pos.</td>
+</tr>
+
+<tr>
+<td class="left">wb</td>
+<td class="left">wrong value of the base at pos.</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">wb should be current base at read</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">tb,wb is one of {0,1,2,3,4,5}</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">0 = 'A', 1 = 'C', 2 = 'G', 3 = 'T', 5 = '-'</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">ind</td>
+<td class="left">indicates the type of error. one of {0,1,2}</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">0 substitution (bad char in the read at pos)  or</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">1 deletion (missing char in the read after pos) or</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">2 insertion (extra char in the read at pos)</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-sec-1-1-2" class="outline-4">
+<h4 id="sec-1-1-2"><span class="section-number-4">1.1.2</span> Align uncorrected reads to BWA</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<ul class="org-ul">
+<li>Before performing alignment, the reads are pre-processed 
+(Section <i>Pre-processing Data</i>).
+</li>
+<li>Uncorrected reads are aligned with BWA. BWA generates alignments
+in SAM format. The script sam-analysis.py
+(Section <i>SAM to TEF Conversion</i>) converts alignments from SAM
+to TEF . 
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-1-1-3" class="outline-4">
+<h4 id="sec-1-1-3"><span class="section-number-4">1.1.3</span> Correct reads</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<ul class="org-ul">
+<li>Error correction program is run against the uncorrected reads. 
+</li>
+<li>The output of error correction program is converted to the
+target error format (TEF) using the following scripts for the
+corresponding error correction program.
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">Program</th>
+<th scope="col" class="left">Script</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">Coral</td>
+<td class="left">coral-analy.pl</td>
+</tr>
+
+<tr>
+<td class="left">HiTEC</td>
+<td class="left">hitec-analy.pl</td>
+</tr>
+
+<tr>
+<td class="left">Quake</td>
+<td class="left">quake-analy.py</td>
+</tr>
+
+<tr>
+<td class="left">ECHO</td>
+<td class="left">quake-analy.py</td>
+</tr>
+</tbody>
+</table>
+<p>
+Reptile generates output in TEF. The usage of these scripts are
+described in the Section <i>Conversion to TEF</i>.
+</p>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-1-1-4" class="outline-4">
+<h4 id="sec-1-1-4"><span class="section-number-4">1.1.4</span> Measure Gain</h4>
+<div class="outline-text-4" id="text-1-1-4">
+<ul class="org-ul">
+<li>The target error format files generated in the previous two
+sections, are compared using Comp2PCAlign (Section
+<i>Comp2PCAlign</i>), which measures Gain and Sensitivity. 
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> Evaluation method for 454/Ion Torrent Reads</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+Evaluation consists of the following steps
+</p>
+<ol class="org-ol">
+<li>Align reads prior to correction.
+</li>
+<li>Construct set of Errors prior to error correction
+</li>
+<li>Construct set of Errors post error correction
+</li>
+<li>Measure Gain by comparing (2) and (3).
+</li>
+</ol>
+<p>
+(2), (3) and (4) are done by a single script. The following sections
+explain these steps.
+</p>
+</div>
+<div id="outline-container-sec-1-2-1" class="outline-4">
+<h4 id="sec-1-2-1"><span class="section-number-4">1.2.1</span> Align uncorrected reads to Mosaik/TMAP</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<ul class="org-ul">
+<li>Before performing alignment, the reads are pre-processed as
+given in  Section <i>Pre-processing Data</i>.
+</li>
+<li>For 454 reads, alignments are performed using Mosaik. For Ion
+Torrent reads, TMAP is used for alignment. Alignments are
+converted to SAM format for further processing.
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-1-2-2" class="outline-4">
+<h4 id="sec-1-2-2"><span class="section-number-4">1.2.2</span> Measure Gain</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<ul class="org-ul">
+<li>Script <code>compute-stats.py</code> 
+(Section <i>Corrected 454/Ion Torrent Reads Analysis</i> ) measures gain for
+454/Ion Torrent Reads using the method explained in the paper.
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Tools</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> Requirements</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Tools used for evaluation have the following dependencies :
+</p>
+<ol class="org-ol">
+<li>GCC C++ compiler v. 4.3
+</li>
+<li>Perl v. 5
+</li>
+<li>Python v. 2.7.2
+</li>
+<li>MPI
+</li>
+<li>mpi4py python package
+</li>
+</ol>
+
+<p>
+No build is required for python and perl scripts. Comp2PCAlign
+executable can be built by just running make in the
+`tools/CompToPCAlign/' directory.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> Pre-processing Data</h3>
+<div class="outline-text-3" id="text-2-2">
+<ul class="org-ul">
+<li>Short Read Archive have the reads in '.sra' format. '.sra'
+format can be converted to fastq format using the 'fastq-dump'
+tool available with NCBI SRA tool kit.
+</li>
+<li>We use FASTA format whenever possible. To convert FASTQ to
+FASTA, the script 'fastq-converter-v2.0.pl' is used as follows.
+<pre class="example">
+$ fastq-converter-v2.0.pl fastq/ fasta/ 1
+</pre>
+<p>
+Here, `fastq/' directory consists of all the fastq files
+of the data-set are stored. Output is generated in the <code>fasta/</code> 
+directory. The last argument `1' is supplied to ignore the reads
+with `N' characters. `fastq-converter-v2.0.pl' generates unique
+ids for each of the read and inserts in the FASTA header. The
+read id is unique among all the files. These identifiers are used
+to compare the reads pre- and post-correction with corresponding
+identifiers. The order in which  `fastq-converter-v2.0.pl' does 
+the conversion is saved. The identifiers are assigned to the
+reads in this order from <b>0</b> to <b>n-1</b>, where <b>n</b> is the total
+number of reads.  For example, for SRR001665 data-set the 
+`fastq-converter-v2.0.pl' processes the fastq files in the
+following order.
+</p>
+<pre class="example">
+SRR001665_2.fastq
+SRR001665.fastq
+SRR001665_1.fastq
+</pre>
+<p>
+Here, the first read in SRR001665\_2.fastq file gets the id <b>0</b>,
+and the last read in SRR001665\_1.fastq has the id <b>n-1</b>.
+</p>
+</li>
+<li>Some of the error correction methods use only accept FASTQ. In
+order to make sure the read ids are same for all the error
+correction methods, we use merge-fastq.py to provide
+identifiers to FASTQ files. The script merges all FASTQ in a
+given input list, so that the ids in the FASTQ can be compared
+pre- and post-correction. merge-fastq.py is run as follows:
+<pre class="example">
+$ merge-fastq.py --list=lst --outfile=all.fastq
+</pre>
+<p>
+where `lst' is a new line delimited file containing the paths to 
+fastq files. For example, for SRR001665 data-set the `&#x2013;list'
+argument is path to a file with the following contents:
+</p>
+<pre class="example">
+SRR001665_2.fastq
+SRR001665.fastq
+SRR001665_1.fastq
+</pre>
+<p>
+For the comparison to make sense, the order should be same as the
+order in which FASTQ converter (`fastq-converter-v2.0.pl') did
+the conversion. 
+</p>
+</li>
+<li>While pre-processing, we ignore the reads with invalid characters
+because some error correction programs can not work with
+invalid characters.
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> Conversion to TEF</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+Scripts for converting output to TEF are used as follows:
+</p>
+<ol class="org-ol">
+<li>coral-analy.pl converts Coral-corrected FASTA file to TEF as
+below: 
+<pre class="example">
+$ coral-analy.pl corrected.fa all.fa coral-output.er &gt; coral_conv.log
+</pre>
+<p>
+In the above example, corrected.fa is the corrected FASTA
+file, all.fa is the uncorrected FASTA file and
+coral-output.er is the output in TEF.
+</p>
+</li>
+<li>Conversion program for both Quake and ECHO is
+quake-analy.py. It is run as below:
+<pre class="example">
+$ quake-analy.py -f all.fastq -c corrected.fastq -o echo-output.er -t echo-trim &gt; missing.log
+</pre>
+<p>
+Here, `all.fastq' is the input file, `corrected.fastq' is the
+ECHO/Quake corrected fastq, `echo-output.er' is the output in
+TEF, and `echo-trim' is the list of reads with the
+trimmed area (which is ignored).
+</p>
+</li>
+<li>Output from HiTEC is converted to TEF as below.
+<pre class="example">
+$ hitec-analy.pl corrected.fa all.fa hitec-output.er
+</pre>
+<p>
+Again, `all.fa' is the uncorrected FASTA, `corrected.fa' is the
+corrected FASTA and `hitec-output.er' is output from HiTEC.
+</p>
+</li>
+</ol>
+
+<p>
+All these scripts exploit the identifiers given in FASTA/FASTQ
+headers added in pre-processing step (Section <i>Pre-processing Data</i>).
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4"><span class="section-number-3">2.4</span> SAM to TEF Conversion</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+Alignments in SAM file are converted to TEF file using the script 
+`sam-analysis.py'.
+</p>
+<pre class="example">
+sam-analysis.py --file=/path/to/sam-file-input
+                --outfile=/path/to/err-output
+                --ambig=/path/to/ambig-output
+                --unmapped=/path/to/unmapped-output
+                --trim=/path/to/trim-file-output
+                [--genomeFile=/path/to/genome-file]
+                [--dry (for dry run no output generated)]
+</pre>
+<p>
+`&#x2013;outfile' option is a path of output file with write
+access. Ambiguous reads are written to the file given as the value for
+`&#x2013;ambig' option. Unmapped reads are written to the output file
+given as the value for `&#x2013;unmapped' option. Unmapped and ambigous file
+can be both same. trim-file-output positions trimmed (ranges allowed).
+</p>
+
+<p>
+Here, genome file is optional. It is used if MD String is not 
+available. If genome file is given, it will be loaded in memory
+completely.  The script doesn't handle genomes with multiple
+chromosomes.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-5" class="outline-3">
+<h3 id="sec-2-5"><span class="section-number-3">2.5</span> Comp2PCAlign</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+Comp2PCAlign measures the Gain and Sensitivity from the outputs
+generated in the previous two sub-sections. Usage is as below:
+</p>
+<pre class="example">
+$ comp2pcalign [correction-rslt] [pre-correct-aln-rslt] [unmapped-pre-correct-aln] [m-value] [fpfn-rslt] [optional trimmed-file]
+</pre>
+<p>
+It takes 6 arguments and they are given in the following order :
+</p>
+<ol class="org-ol">
+<li>Correction Result converted to TEF.
+</li>
+<li>Alignment SAM converted to TEF.
+</li>
+<li>File with list of unmapped reads.
+</li>
+<li>Edit distance used for alignment.
+</li>
+<li>Output file with write access to which the statistics are written
+to. 
+</li>
+<li>[Optional] List of reads with trimmed regions.
+</li>
+</ol>
+<p>
+(1) is generated from Error correction output as described in Section
+<i>Conversion to TEF</i>. (2),(3),(4) and (6) are generated from the
+alignment as described in <i>SAM to TEF Conversion</i>. (3) is a
+concatenation of both unmapped and ambiguous reads.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-6" class="outline-3">
+<h3 id="sec-2-6"><span class="section-number-3">2.6</span> Corrected 454/Ion Torrent Reads Analysis</h3>
+<div class="outline-text-3" id="text-2-6">
+<p>
+The procedure to analyse 454/Ion Torrent Reads is given in the
+paper. `compute-stats.py' is the script implementing the procedure.
+It is used as below: 
+</p>
+<pre class="example">
+compute-stats.py --aln=/path/to/pre-correction-alignment-sam-file
+                --corrected=/path/to/corrected-reads-fa-file
+                --outfile=/path/to/stats-output (write access reqd.)
+                --records=number of reads
+                [--genomeFile=/path/to/genome-file]
+                [--band=value of k used for k-band alignment (default 5)]
+              (OR)
+compute-stats.py -a /path/to/pre-correction-alignment-sam-file
+                -c /path/to/corrected-reads-fa-file
+                -o /path/to/stats-output-file (write access reqd.)
+                -r number of reads
+                [-g /path/to/genome-file]
+                [-b value of k used for k-band alignment (default 5)]
+</pre>
+<p>
+The script accepts only FASTA file. The script requires that the
+FASTA is pre-processed as given in Section <i>Pre-processing Data</i>,
+because it exploits the sorted identifiers to process SAM with FASTA
+in a single pass. 
+</p>
+
+<p>
+`&#x2013;band' option gives the value of band size used for k-band
+alignment. Here, genome file is optional. It is used if the MD String
+is not  available. If genome file is given, it will be loaded in
+memory completely.  The script doesn't handle genomes with multiple
+chromosomes.
+</p>
+
+<p>
+`compute-stats.py' requires MPI, and mpi4py as it is uses MPI.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Procedure Conventions</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+The directory structure that we used to organize the data for error
+correction is shown below.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-bash">ec-review
+|-- data
+|   |-- Dorsphilia
+|   |   |-- bwa
+|   |   |-- coral
+|   |   |-- echo
+|   |   |-- errors
+|   |   |-- fasta
+|   |   |-- fastq
+|   |   |-- hammer
+|   |   |-- hitec
+|   |   |-- hshrec
+|   |   |-- quake
+|   |   |-- ref_genome
+|   |   |-- reptile
+|   |   |-- rmap
+|   |   `-- sra
+|   |-- EColi2-HiTEC
+|   |   |-- bwa
+|   |   |-- coral
+|   |   |-- download
+|   |   |-- echo
+|   |   |-- fasta
+|   |   |-- fastq
+|   |   |-- hitec
+|   |   |-- hshrec
+|   |   |-- quake
+|   |   |-- ref_genome
+|   |   `-- reptile
+|   |-- ecoli-iontorrent
+|   |   |-- bwa
+|   |   |-- coral
+|   |   |-- fasta
+|   |   |-- fastq
+|   |   |-- hshrec
+|   |   |-- ref_genome
+|   |   `-- tmap
+|   |-- ERA000206
+|   |   |-- bwa
+|   |   |-- coral
+|   |   |-- echo
+|   |   |-- fasta
+|   |   |-- fastq
+|   |   |-- hitec
+|   |   |-- hshrec
+|   |   |-- quake
+|   |   |-- ref_genome
+|   |   `-- reptile
+|   |-- SRR000868
+|   |   |-- bwa
+|   |   |-- coral
+|   |   |-- echo
+|   |   |-- fasta
+|   |   |-- fastq
+|   |   |-- hitec
+|   |   |-- hshrec
+|   |   |-- mosaik
+|   |   |-- quake
+|   |   |-- ref_genome
+|   |   |-- reptile
+|   |   `-- rmap
+|   |-- SRR022866
+|   |   |-- bwa
+|   |   |-- coral
+|   |   |-- echo
+|   |   |-- fasta
+|   |   |-- fastq
+|   |   |-- hitec
+|   |   |-- hshrec
+|   |   |-- quake
+|   |   |-- ref_genome
+|   |   `-- reptile
+|   |-- SRR022918
+|   |   |-- bwa
+|   |   |-- coral
+|   |   |-- echo
+|   |   |-- fasta
+|   |   |-- fastq
+|   |   |-- hitec
+|   |   |-- hshrec
+|   |   |-- quake
+|   |   |-- ref_genome
+|   |   |-- reptile
+|   |   |-- rmap
+|   |   `-- sra
+|   `-- SRX000429
+|       |-- bwa
+|       |-- coral
+|       |-- echo
+|       |-- fasta
+|       |-- fastq
+|       |-- hitec
+|       |-- hshrec
+|       |-- quake
+|       |-- ref_genome
+|       |-- reptile
+|       `-- sra
+|-- coral
+|   `-- coral-1.3
+|-- echo
+|-- hitec
+|   `-- HiTEC_64bit
+|-- hshrec
+|   `-- BaseSpaceSHREC
+|-- quake
+|   |-- jellyfish-1.0.2
+|   |-- jellyfish-1.1.2
+|   `-- Quake
+|       |-- bin
+|       `-- src
+|-- reptile
+|   |-- doc
+|   |-- downloads
+|   |-- src
+|   `-- utils
+|       |-- reptile_merger
+|       `-- seq-analy
+|-- samtools
+|   |-- bam2bed
+|   `-- samtools-0.1.18
+|-- bwa
+|   `-- bwa-0.5.9
+|-- rmap
+|   `-- rmap_v2.05
+|-- tmap
+|   `-- tmap-0.1.3
+|-- mosaik
+|   `-- MOSAIK-2.1.33-Linux-x64
+`-- tools
+    |-- CompToPCAlign
+    |-- doc
+    |-- rmapAnaly
+    `-- scripts
+</pre>
+</div>
+<p>
+Under the main directory we have a `data' directory, a directory for
+each alignment program and the error correction program we use, and a
+`tools' directory which contains the scripts used to evaluate.
+</p>
+
+<p>
+Within `main/data', we have a  directory corresponding to each data-set.
+With in the directory corresponding to a each data-set, the
+corresponding input data and the corresponding outputs are
+stored. Input is stored in the `fasta' and `fastq'
+directory. Convention is to keep the name `all.fa/all.fastq' for
+input files and `corrected.fa/corrected.fastq' for output files. The
+output of an error correction program and the evaluation results are
+kept in the corresponding error correction program directory with in
+the dataset directory. For example, reptile output for SRX000429 is
+in the `data/SRX000429/reptile' directory. Pre-correction alignment
+is stored in the directory named after the alignment program. For
+example, BWA alignments for dataset SRX000429 are stored in
+`data/SRX000429/bwa' directory. Reference genome will be present in 
+the `ref_genome` sub-directory with the file name `full_genome.fna' or
+`full_genome.fa'.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Download</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Source code for the tools are available from <a href="https://alurulab.cc.gatech.edu/ecr">here</a>.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2011-12-26</p>
+<p class="author">Author: Sriram P Chockalingam</p>
+<p class="date">Created: 2018-06-01 Fri 14:36</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.1.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

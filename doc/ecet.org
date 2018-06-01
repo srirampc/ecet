@@ -1,0 +1,310 @@
+#+STYLE: <link rel="stylesheet" type="text/css" href="stylesheet.css" />
+#+TITLE:     Error Correction Evaluation Method
+#+AUTHOR:    Sriram P Chockalingam
+#+EMAIL:     sriram.pc@iitb.ac.in
+#+DATE:      2011-12-26 
+#+DESCRIPTION:
+#+KEYWORDS:
+#+LANGUAGE:  en
+#+OPTIONS: toc:2 ^:nil
+#+INFOJS_OPT: view:nil toc:2 ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+LINK_UP:   
+#+LINK_HOME: 
+#+XSLT:
+In this page, we discuss the scripts and other tools used to evaluate
+error correction method. In the first section, we discuss the
+procedure for  evaluation methods for Illumina and 454/Ion Torrent
+reads. In the second section, we discuss the tools and its usage. In
+the third section, we describe the conventions used for
+evaluation. The last section provides the link to download the tools.
+* Evaluation method
+** Evaluation method for Illumina reads
+Evaluation of output from error correction method consists of
+following steps, 
+1. Align reads prior to correction.
+2. Convert pre-correction alignment to Target Error Format (TEF).
+3. Run error correction program.
+4. Convert error correction output to Target Error Format (TEF).
+5. Compare TEFs from steps (2) and (4) and measure Gain.
+
+The following sub-section describe these steps.
+*** Target error format (TEF)
+  We use a format called target error format (TEF) to perform the
+  analysis for Illumina reads. TEF represents the errors in a read as
+  below: 
+#+BEGIN_EXAMPLE
+  readid n-errors [pos tb wb ind]+
+#+END_EXAMPLE
+   In the above format, the fields are described as below :
+   |----------+----------------------------------------------------|
+   | Fields   | Description                                        |
+   |----------+----------------------------------------------------|
+   | readid   | ID of the read corrected                           |
+   | n-errors | Integer. Number of errors corrected in the read.   |
+   | pos      | Position for fix (0 <= pos < length of the read)   |
+   |----------+----------------------------------------------------|
+   | tb       | true value of the base at pos.                     |
+   | wb       | wrong value of the base at pos.                    |
+   |          | wb should be current base at read                  |
+   |          | tb,wb is one of {0,1,2,3,4,5}                      |
+   |          | 0 = 'A', 1 = 'C', 2 = 'G', 3 = 'T', 5 = '-'        |
+   |----------+----------------------------------------------------|
+   | ind      | indicates the type of error. one of {0,1,2}        |
+   |          | 0 substitution (bad char in the read at pos)  or   |
+   |          | 1 deletion (missing char in the read after pos) or |
+   |          | 2 insertion (extra char in the read at pos)        |
+   |          |                                                    |
+   |----------+----------------------------------------------------|
+*** Align uncorrected reads to BWA 
+# <<align-bwa>>
+    - Before performing alignment, the reads are pre-processed 
+      (Section [[pre-process][Pre-processing Data]]).
+    - Uncorrected reads are aligned with BWA. BWA generates alignments
+      in SAM format. The script sam-analysis.py
+      (Section [[sam-to-tef][SAM to TEF Conversion]]) converts alignments from SAM
+      to TEF . 
+*** Correct reads
+# <<correct-reads>>
+    - Error correction program is run against the uncorrected reads. 
+    - The output of error correction program is converted to the
+      target error format (TEF) using the following scripts for the
+      corresponding error correction program.
+      |---------+----------------|
+      | Program | Script         |
+      |---------+----------------|
+      | Coral   | coral-analy.pl |
+      | HiTEC   | hitec-analy.pl |
+      | Quake   | quake-analy.py |
+      | ECHO    | quake-analy.py |
+      |---------+----------------|
+      Reptile generates output in TEF. The usage of these scripts are
+      described in the Section [[tef-conversion][Conversion to TEF]].
+*** Measure Gain
+# <<measure-gain>>
+    - The target error format files generated in the previous two
+      sections, are compared using Comp2PCAlign (Section
+      [[comp2pcalign][Comp2PCAlign]]), which measures Gain and Sensitivity. 
+
+** Evaluation method for 454/Ion Torrent Reads
+Evaluation consists of the following steps
+1. Align reads prior to correction.
+2. Construct set of Errors prior to error correction
+3. Construct set of Errors post error correction
+4. Measure Gain by comparing (2) and (3).
+(2), (3) and (4) are done by a single script. The following sections
+explain these steps.
+*** Align uncorrected reads to Mosaik/TMAP
+    - Before performing alignment, the reads are pre-processed as
+      given in  Section [[pre-process][Pre-processing Data]].
+    - For 454 reads, alignments are performed using Mosaik. For Ion
+      Torrent reads, TMAP is used for alignment. Alignments are
+      converted to SAM format for further processing.
+*** Measure Gain
+    - Script ~compute-stats.py~ 
+      (Section [[ion454-tools][Corrected 454/Ion Torrent Reads Analysis]] ) measures gain for
+      454/Ion Torrent Reads using the method explained in the paper.
+
+* Tools
+** Requirements
+# <<tools-reqs>>
+Tools used for evaluation have the following dependencies :
+1. GCC C++ compiler v. 4.3
+2. Perl v. 5
+3. Python v. 2.7.2
+4. MPI
+5. mpi4py python package
+
+No build is required for python and perl scripts. Comp2PCAlign
+executable can be built by just running make in the
+`tools/CompToPCAlign/' directory.
+
+** Pre-processing Data
+# <<pre-process>>
+   - Short Read Archive have the reads in '.sra' format. '.sra'
+     format can be converted to fastq format using the 'fastq-dump'
+     tool available with NCBI SRA tool kit.
+   - We use FASTA format whenever possible. To convert FASTQ to
+     FASTA, the script 'fastq-converter-v2.0.pl' is used as follows.
+     #+BEGIN_EXAMPLE
+     $ fastq-converter-v2.0.pl fastq/ fasta/ 1
+     #+END_EXAMPLE
+     Here, `fastq/' directory consists of all the fastq files
+     of the data-set are stored. Output is generated in the ~fasta/~ 
+     directory. The last argument `1' is supplied to ignore the reads
+     with `N' characters. `fastq-converter-v2.0.pl' generates unique
+     ids for each of the read and inserts in the FASTA header. The
+     read id is unique among all the files. These identifiers are used
+     to compare the reads pre- and post-correction with corresponding
+     identifiers. The order in which  `fastq-converter-v2.0.pl' does 
+     the conversion is saved. The identifiers are assigned to the
+     reads in this order from *0* to *n-1*, where *n* is the total
+     number of reads.  For example, for SRR001665 data-set the 
+     `fastq-converter-v2.0.pl' processes the fastq files in the
+     following order.
+     #+BEGIN_EXAMPLE
+     SRR001665_2.fastq
+     SRR001665.fastq
+     SRR001665_1.fastq
+     #+END_EXAMPLE
+     Here, the first read in SRR001665\_2.fastq file gets the id *0*,
+     and the last read in SRR001665\_1.fastq has the id *n-1*.
+   - Some of the error correction methods use only accept FASTQ. In
+     order to make sure the read ids are same for all the error
+     correction methods, we use merge-fastq.py to provide
+     identifiers to FASTQ files. The script merges all FASTQ in a
+     given input list, so that the ids in the FASTQ can be compared
+     pre- and post-correction. merge-fastq.py is run as follows:
+     #+BEGIN_EXAMPLE
+     $ merge-fastq.py --list=lst --outfile=all.fastq
+     #+END_EXAMPLE
+     where `lst' is a new line delimited file containing the paths to 
+     fastq files. For example, for SRR001665 data-set the `--list'
+     argument is path to a file with the following contents:
+     #+BEGIN_EXAMPLE
+     SRR001665_2.fastq
+     SRR001665.fastq
+     SRR001665_1.fastq
+     #+END_EXAMPLE
+     For the comparison to make sense, the order should be same as the
+     order in which FASTQ converter (`fastq-converter-v2.0.pl') did
+     the conversion. 
+   - While pre-processing, we ignore the reads with invalid characters
+     because some error correction programs can not work with
+     invalid characters.
+** Conversion to TEF
+# <<tef-conversion>>
+   Scripts for converting output to TEF are used as follows:
+   1. coral-analy.pl converts Coral-corrected FASTA file to TEF as
+      below: 
+     #+BEGIN_EXAMPLE
+     $ coral-analy.pl corrected.fa all.fa coral-output.er > coral_conv.log
+     #+END_EXAMPLE
+      In the above example, corrected.fa is the corrected FASTA
+      file, all.fa is the uncorrected FASTA file and
+      coral-output.er is the output in TEF.
+   2. Conversion program for both Quake and ECHO is
+      quake-analy.py. It is run as below:
+      #+BEGIN_EXAMPLE
+      $ quake-analy.py -f all.fastq -c corrected.fastq -o echo-output.er -t echo-trim > missing.log
+      #+END_EXAMPLE
+      Here, `all.fastq' is the input file, `corrected.fastq' is the
+      ECHO/Quake corrected fastq, `echo-output.er' is the output in
+      TEF, and `echo-trim' is the list of reads with the
+      trimmed area (which is ignored).
+   3. Output from HiTEC is converted to TEF as below.
+      #+BEGIN_EXAMPLE
+      $ hitec-analy.pl corrected.fa all.fa hitec-output.er
+      #+END_EXAMPLE
+      Again, `all.fa' is the uncorrected FASTA, `corrected.fa' is the
+      corrected FASTA and `hitec-output.er' is output from HiTEC.
+
+   All these scripts exploit the identifiers given in FASTA/FASTQ
+   headers added in pre-processing step (Section [[pre-process][Pre-processing Data]]).
+
+** SAM to TEF Conversion
+# <<sam-to-tef>>
+Alignments in SAM file are converted to TEF file using the script 
+`sam-analysis.py'.
+#+BEGIN_EXAMPLE
+sam-analysis.py --file=/path/to/sam-file-input
+                --outfile=/path/to/err-output
+                --ambig=/path/to/ambig-output
+                --unmapped=/path/to/unmapped-output
+                --trim=/path/to/trim-file-output
+                [--genomeFile=/path/to/genome-file]
+                [--dry (for dry run no output generated)]
+#+END_EXAMPLE
+`--outfile' option is a path of output file with write
+access. Ambiguous reads are written to the file given as the value for
+`--ambig' option. Unmapped reads are written to the output file
+given as the value for `--unmapped' option. Unmapped and ambigous file
+can be both same. trim-file-output positions trimmed (ranges allowed).
+
+Here, genome file is optional. It is used if MD String is not 
+available. If genome file is given, it will be loaded in memory
+completely.  The script doesn't handle genomes with multiple
+chromosomes.
+
+** Comp2PCAlign
+# <<comp2pacalign>>
+
+Comp2PCAlign measures the Gain and Sensitivity from the outputs
+generated in the previous two sub-sections. Usage is as below:
+#+BEGIN_EXAMPLE
+$ comp2pcalign [correction-rslt] [pre-correct-aln-rslt] [unmapped-pre-correct-aln] [m-value] [fpfn-rslt] [optional trimmed-file]
+#+END_EXAMPLE
+It takes 6 arguments and they are given in the following order :
+1. Correction Result converted to TEF.
+2. Alignment SAM converted to TEF.
+3. File with list of unmapped reads.
+4. Edit distance used for alignment.
+5. Output file with write access to which the statistics are written
+   to. 
+6. [Optional] List of reads with trimmed regions.
+(1) is generated from Error correction output as described in Section
+[[tef-conversion][Conversion to TEF]]. (2),(3),(4) and (6) are generated from the
+alignment as described in [[sam-to-tef][SAM to TEF Conversion]]. (3) is a
+concatenation of both unmapped and ambiguous reads.
+
+** Corrected 454/Ion Torrent Reads Analysis
+# <<ion454-tools>>
+The procedure to analyse 454/Ion Torrent Reads is given in the
+paper. `compute-stats.py' is the script implementing the procedure.
+It is used as below: 
+#+BEGIN_EXAMPLE
+compute-stats.py --aln=/path/to/pre-correction-alignment-sam-file
+                --corrected=/path/to/corrected-reads-fa-file
+                --outfile=/path/to/stats-output (write access reqd.)
+                --records=number of reads
+                [--genomeFile=/path/to/genome-file]
+                [--band=value of k used for k-band alignment (default 5)]
+              (OR)
+compute-stats.py -a /path/to/pre-correction-alignment-sam-file
+                -c /path/to/corrected-reads-fa-file
+                -o /path/to/stats-output-file (write access reqd.)
+                -r number of reads
+                [-g /path/to/genome-file]
+                [-b value of k used for k-band alignment (default 5)]
+
+#+END_EXAMPLE
+The script accepts only FASTA file. The script requires that the
+FASTA is pre-processed as given in Section [[pre-process][Pre-processing Data]],
+because it exploits the sorted identifiers to process SAM with FASTA
+in a single pass. 
+
+`--band' option gives the value of band size used for k-band
+alignment. Here, genome file is optional. It is used if the MD String
+is not  available. If genome file is given, it will be loaded in
+memory completely.  The script doesn't handle genomes with multiple
+chromosomes.
+
+`compute-stats.py' requires MPI, and mpi4py as it is uses MPI.
+
+* Procedure Conventions
+ The directory structure that we used to organize the data for error
+ correction is shown below.
+#+INCLUDE: "./struct.txt" src bash
+ Under the main directory we have a `data' directory, a directory for
+ each alignment program and the error correction program we use, and a
+ `tools' directory which contains the scripts used to evaluate.
+
+ Within `main/data', we have a  directory corresponding to each data-set.
+ With in the directory corresponding to a each data-set, the
+ corresponding input data and the corresponding outputs are
+ stored. Input is stored in the `fasta' and `fastq'
+ directory. Convention is to keep the name `all.fa/all.fastq' for
+ input files and `corrected.fa/corrected.fastq' for output files. The
+ output of an error correction program and the evaluation results are
+ kept in the corresponding error correction program directory with in
+ the dataset directory. For example, reptile output for SRX000429 is
+ in the `data/SRX000429/reptile' directory. Pre-correction alignment
+ is stored in the directory named after the alignment program. For
+ example, BWA alignments for dataset SRX000429 are stored in
+ `data/SRX000429/bwa' directory. Reference genome will be present in 
+ the `ref_genome` sub-directory with the file name `full_genome.fna' or
+ `full_genome.fa'.
+ 
+* Download
+  Source code for the tools are available from [[https://alurulab.cc.gatech.edu/ecr][here]].
