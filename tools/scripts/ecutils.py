@@ -1,4 +1,6 @@
+from __future__ import print_function
 from mpi4py import MPI
+import sys
 #
 #  File : ecutils.py
 #  Created on December 1, 2011
@@ -24,6 +26,12 @@ alphabet = ['A','C','G','T','N','R','Y']
 alphabetString = "".join(alphabet)
 complementMapping = {'A':'T','C':'G','T':'A','G':'C','-':'-','N':'N','Y':'Y','R':'R'}
 
+def eprint(*args, **kwargs):
+    # Code from stackoverflow anser 
+    # https://stackoverflow.com/questions/5574702
+    print(*args, file=sys.stderr, **kwargs)
+
+
 def load_genome(gfname):
     fgenome = {}
     with open(gfname, 'r') as f:
@@ -48,7 +56,7 @@ def reverse_complement(inRead):
 def decompose(total,rank,size):
     #global psize, prank
     block_decomp = [0 for i in range(size)]
-    block_decomp_sum = [0 for i in range(size)]
+    #block_decomp_sum = [0 for i in range(size)]
     startid = 0
     endid = total-1
     tmp = total/size
@@ -68,13 +76,13 @@ def decompose(total,rank,size):
         endid =  bsum[rank+1] - 1
     block_decomp_sum = bsum
     if rank == 0:
-        print bsum
-        print block_decomp
+        eprint(bsum)
+        eprint(block_decomp)
     MPI.COMM_WORLD.barrier()
     for i in range(size):
         MPI.COMM_WORLD.barrier()
         if i == rank:
-            print (rank, startid, endid)
+            eprint(rank, startid, endid)
         MPI.COMM_WORLD.barrier()
     return (startid,endid)
 
@@ -90,7 +98,7 @@ def getSAMinfo(line):
     sminf['FLAG'] = int(elts[1])
     sminf['RNAME'] = elts[2]
     sminf['POS'] = int(elts[3])
-    sminf['MAPQ'] = int(elts[4]);
+    sminf['MAPQ'] = int(elts[4])
     sminf['CIGAR'] = elts[5]
     sminf['SEQ'] = elts[9]
     sminf['XT'] = sminf['AS'] = sminf['MD'] = None

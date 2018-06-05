@@ -451,7 +451,7 @@ def getRefAlignment(cigarPairs,mdComps,readString):
 def getGenomeRefAlign(gstr,gpos,cigarPairs,readString):
     sofar = gpos-1
     refAlign = ''
-    [fl,fc] = cigarPairs[0]
+    [_,fc] = cigarPairs[0]
     if fc == 'S':
         cigarPairs = cigarPairs[1:]
     for [l,c] in cigarPairs:
@@ -507,7 +507,7 @@ def getReadAlignment(cigarPairs,readString):
     return (readAlign,skipbegin,skipend)
 
 def getSAMAlignment(readString, cigarString, mdString,gstr,gpos):
-    readLength = len(readString)
+    #readLength = len(readString)
     # Parse CIGAR and MD String
     cigarPairs = getCIGARPairs(cigarString)
     # Fix up the read and ref alignment string
@@ -520,7 +520,7 @@ def getSAMAlignment(readString, cigarString, mdString,gstr,gpos):
     else:
         refAlign = getGenomeRefAlign(gstr,gpos,cigarPairs,readString)
     if(len(refAlign) != len(readAlign)):
-        print 'length doesnt match'
+        print'length doesnt match'
         print readAlign
         print refAlign
     assert len(refAlign) == len(readAlign)
