@@ -1,7 +1,7 @@
 PROG=comp2pcalign
 CC=g++
 CFLAGS= -c -Wall -g3 
-LFLAGS=
+LFLAGS=-lz
 SRCS=$(wildcard *.cpp) 
 OBJS=$(SRCS:.cpp=.o)
 

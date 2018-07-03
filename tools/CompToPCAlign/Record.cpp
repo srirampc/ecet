@@ -23,6 +23,9 @@
 #include "Record.h"
 #include <sstream>
 #include <string>
+#include <zlib.h>
+#include "kseq.h"
+KSTREAM_INIT(gzFile, gzread, 16384)
 
 Record::Record() {
 }
@@ -47,16 +50,20 @@ bool unicpy(const e_t& e1, const e_t& e2) {
 }
 
 void Record::load(const char* filename) {
+    gzFile fp = gzopen(filename, "r");
 
-    std::ifstream input(filename); //pre-correction alignment file
-    if (!input.good()) {
+    //std::ifstream input(filename); //pre-correction alignment file
+    //if (!input.good()) {
+    if (fp == Z_NULL) {
         std::cout << "err opening file: " << filename << "\n";
         exit(1);
     }
-
-    while (input.good()) {
-        std::string line;
-        getline(input,line);
+    kstream_t *ks;
+    kstring_t str = {0,0,0};
+    ks = ks_init(fp);
+    while (ks_getuntil(ks, '\n', &str, 0) >= 0) {
+        std::string line(str.s);
+        //getline(input,line);
         line.erase(line.find_last_not_of(" \n\r\t")+1);
         if(line.length() == 0)
             continue;
@@ -81,37 +88,55 @@ void Record::load(const char* filename) {
 #endif
     }
     std::sort(records_.begin(), records_.end(), Rcomp);
-    input.close();
+    //input.close();
+    ks_destroy(ks);
+    gzclose(fp);
+    free(str.s);
 }
 
 void Record::getAmbig(const char* filename) {
 
-    std::ifstream input(filename); //Ambig file
-    if (!input.good()) {
+    gzFile fp = gzopen(filename, "r");
+
+    //std::ifstream input(filename); //pre-correction alignment file
+    //if (!input.good()) {
+    if (fp == Z_NULL) {
         std::cout << "err opening file: " << filename << "\n";
         exit(1);
     }
-
-    while (input.good()) {
+    kstream_t *ks;
+    kstring_t str = {0,0,0};
+    ks = ks_init(fp);
+    while (ks_getuntil(ks, '\n', &str, 0) >= 0) {
+        //getline(input,line);
         int readID;
-        input >> readID;
+        //input >> readID;
+        std::atoi(str.s);
         ambig_.insert(readID);
     }
 
-    input.close();
+    //input.close();
+    ks_destroy(ks);
+    gzclose(fp);
+    free(str.s);
 
 }
 
 void Record::getTrimmed(const char *filename){
-    std::ifstream input(filename); //Ambig file
-    if (!input.good()) {
+    gzFile fp = gzopen(filename, "r");
+
+    //std::ifstream input(filename); //pre-correction alignment file
+    //if (!input.good()) {
+    if (fp == Z_NULL) {
         std::cout << "err opening file: " << filename << "\n";
         exit(1);
     }
-
-    while (input.good()) {
-        std::string line;
-        getline(input,line);
+    kstream_t *ks;
+    kstring_t str = {0,0,0};
+    ks = ks_init(fp);
+    while (ks_getuntil(ks, '\n', &str, 0) >= 0) {
+        std::string line(str.s);
+        //getline(input,line);
         line.erase(line.find_last_not_of(" \n\r\t")+1);
         if(line.length() == 0)
             continue;
@@ -124,5 +149,8 @@ void Record::getTrimmed(const char *filename){
         trimmed_.insert(std::pair<int,int>(readID,trimmedLength));
         trimPrefix_.insert(std::pair<int,int>(readID,trimPrefix));
     }
-    input.close();
+    //input.close();
+    ks_destroy(ks);
+    gzclose(fp);
+    free(str.s);
 }
