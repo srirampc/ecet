@@ -67,7 +67,7 @@ def gettrim(lines):
     
 def getid(lines):
     elts = lines[0].split()
-    readid = int(elts[0][1:])
+    readid = elts[0][1:]
     return readid
 
 def checkid(target):
