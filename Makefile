@@ -9,7 +9,7 @@ TOOLS_BINARIES = tools/rmapAnaly/rmap-analy \
 	tools/scripts/coral-analy.pl \
 	tools/scripts/quake-analy.py \
 	tools/scripts/alignment.py \
-	tools/scripts/sam-analyis.py
+	tools/scripts/sam-analysis.py
 
 TOOLS_ZIP_DATA = tools/rmapAnaly/Errlocator.h \
 	tools/rmapAnaly/rmapAnaly.h \
@@ -27,7 +27,7 @@ TOOLS_ZIP_DATA = tools/rmapAnaly/Errlocator.h \
 	tools/scripts/coral-analy.pl \
 	tools/scripts/quake-analy.py \
 	tools/scripts/alignment.py \
-	tools/scripts/sam-analyis.py \
+	tools/scripts/sam-analysis.py \
 	tools/CompToPCAlign \
 	tools/CompToPCAlign/Record.cpp \
 	tools/CompToPCAlign/util.h \
