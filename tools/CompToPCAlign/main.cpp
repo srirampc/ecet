@@ -64,8 +64,8 @@ void print_rslt(const fpnp_t& rslt){
     std::cout << "FN: " << rslt.FN << "  FP:" << rslt.FP << "  TP:" << rslt.TP << "\n";
 }
 
-int getTrimmedLength(const imap_t& trimmed, int readID){
-    imap_t::const_iterator cit = trimmed.find(readID);
+int getTrimmedLength(const smap_t& trimmed, const std::string& readID){
+    smap_t::const_iterator cit = trimmed.find(readID);
     if(cit != trimmed.end()) {
         int tLen = (*cit).second;
         return tLen;
@@ -73,8 +73,8 @@ int getTrimmedLength(const imap_t& trimmed, int readID){
     return INT_MAX;
 }
 
-int getTrimPrefix(const imap_t& trimPrefix, int readID){
-    imap_t::const_iterator cit = trimPrefix.find(readID);
+int getTrimPrefix(const smap_t& trimPrefix, const std::string& readID){
+    smap_t::const_iterator cit = trimPrefix.find(readID);
     if(cit != trimPrefix.end()) {
         int tLen = (*cit).second;
         return tLen;
@@ -94,8 +94,8 @@ int getTrimErrors(const evec_t &errors,int maxpos,int lbound){
 }
 
 void comparison(const char* filename, const std::vector<record_t>& ref,
-                const std::vector<record_t>& tar, const iset_t& ambig,
-                const imap_t& trimmed, const imap_t& trimPrefix, int mvalue) {
+                const std::vector<record_t>& tar, const sset_t& ambig,
+                const smap_t& trimmed, const smap_t& trimPrefix, int mvalue) {
 
     int idx_r = 0, idx_t = 0;
 
@@ -103,7 +103,7 @@ void comparison(const char* filename, const std::vector<record_t>& ref,
     
     int refTotal = 0; // total number of errors in the ref
     
-    iset_t ref_readIDs;
+    sset_t ref_readIDs;
     for (unsigned int i = 0; i < ref.size(); ++ i){
         int tLen = getTrimmedLength(trimmed,ref[i].readID) - 1;
         int tPrefix = getTrimmedLength(trimmed,ref[i].readID);
@@ -194,8 +194,8 @@ void print_evec(const evec_t& myvec){
 }
 
 
-void checkRead(fpnp_t& rslt, int readID, 
-               const imap_t& trimmed, const imap_t& trimPrefix,
+void checkRead(fpnp_t& rslt, const std::string& readID, 
+               const smap_t& trimmed, const smap_t& trimPrefix,
                const evec_t& ref, const evec_t& tar) {
 
 #ifdef DEBUG

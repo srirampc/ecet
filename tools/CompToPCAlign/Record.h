@@ -36,20 +36,20 @@ public:
     const std::vector<record_t>& getRecords() const{
         return records_;
     }
-    const iset_t& getAmbig() const{
+    const sset_t& getAmbig() const{
         return ambig_;
     }
-    const imap_t& getTrimmed() const{
+    const smap_t& getTrimmed() const{
         return trimmed_;
     }
-    const imap_t& getTrimPrefix() const{
+    const smap_t& getTrimPrefix() const{
         return trimPrefix_;
     }
 private:
     std::vector<record_t> records_;
-    iset_t ambig_;
-    imap_t trimmed_;
-    imap_t trimPrefix_;
+    sset_t ambig_;
+    smap_t trimmed_;
+    smap_t trimPrefix_;
 };
 
 #endif	/* _RECORD_H */

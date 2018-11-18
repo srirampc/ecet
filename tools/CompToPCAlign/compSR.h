@@ -40,6 +40,10 @@ typedef std::vector<int> ivec_t;
 typedef std::set<int> iset_t;
 typedef std::map<int,int> imap_t;
 
+typedef std::set<std::string> sset_t;
+typedef std::vector<std::string> svec_t;
+typedef std::map<std::string,int> smap_t;
+
 typedef struct ERRINFO{
     int pos;
     int from;
@@ -51,9 +55,9 @@ typedef struct ERRINFO{
 typedef std::vector<e_t> evec_t;
 
 typedef struct RECORD{
-    int readID;
+    std::string readID;
     evec_t evec;
-    RECORD (int ID, evec_t vec): readID(ID), evec(vec) {}
+    RECORD (std::string ID, evec_t vec): readID(ID), evec(vec) {}
 }record_t;
 
 class Para {
@@ -110,10 +114,10 @@ typedef struct FPNP{
 }fpnp_t;
 
 void comparison(const char* filename, const std::vector<record_t>& ref,
-                const std::vector<record_t>& tar, const iset_t& ambig,
-                const imap_t& trimmed, const imap_t& trimPrefix, int mvalue);
-void checkRead(fpnp_t& rslt, int readID, 
-               const imap_t& trimmed, const imap_t& trimPrefix,
+                const std::vector<record_t>& tar, const sset_t& ambig,
+                const smap_t& trimmed, const smap_t& trimPrefix, int mvalue);
+void checkRead(fpnp_t& rslt, const std::string& readID, 
+               const smap_t& trimmed, const smap_t& trimPrefix,
                const evec_t& ref, const evec_t& tar);
 void output(const fpnp_t& rslt, int mvalue, const char* filename);
 

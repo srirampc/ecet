@@ -70,7 +70,8 @@ void Record::load(const char* filename) {
         std::istringstream iss (line,std::istringstream::in);
 
         evec_t tmpEvec;
-        int readID, errNum, pos, from, to, qual;
+        std::string readID;
+        int errNum, pos, from, to, qual;
         iss >> readID >> errNum;
         for (int i = 0; i < errNum; ++i) {
             iss >> pos >> from >> to >> qual;
@@ -109,10 +110,10 @@ void Record::getAmbig(const char* filename) {
     ks = ks_init(fp);
     while (ks_getuntil(ks, '\n', &str, 0) >= 0) {
         //getline(input,line);
-        int readID;
+        //int readID;
         //input >> readID;
-        std::atoi(str.s);
-        ambig_.insert(readID);
+        //std::atoi(str.s);
+        ambig_.insert(std::string(str.s));
     }
 
     //input.close();
@@ -141,13 +142,14 @@ void Record::getTrimmed(const char *filename){
         if(line.length() == 0)
             continue;
         std::istringstream iss (line,std::istringstream::in);
-        int readID = -1, trimmedLength = -1,trimPrefix;
+        std::string readID;
+        int trimmedLength = -1,trimPrefix;
         
         iss >> readID >> trimmedLength >> trimPrefix;
-        if(readID == -1)
+        if(readID.length() == 0)
             continue;
-        trimmed_.insert(std::pair<int,int>(readID,trimmedLength));
-        trimPrefix_.insert(std::pair<int,int>(readID,trimPrefix));
+        trimmed_.insert(std::pair<std::string,int>(readID,trimmedLength));
+        trimPrefix_.insert(std::pair<std::string,int>(readID,trimPrefix));
     }
     //input.close();
     ks_destroy(ks);
